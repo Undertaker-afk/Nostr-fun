@@ -65,15 +65,37 @@ The most critical component for cross-platform sync is the secure, shared key.
 
 The marketplace events (Kind 30017/30018) are inherently public and decentralized.
 
-*   **Web App:** Should be able to publish new Stall and Product events.
-*   **Android App:** Will subscribe to the same events, ensuring that a listing created on the Web App is immediately visible on the Android App (and vice-versa) once the relay propagates the event.
+*   **Web App:** Should be able to publish new Stall and Product events, and handle payment requests via NIP-47.
+*   **Android App:** Will subscribe to the same events, ensuring that a listing created on the Web App is immediately visible on the Android App (and vice-versa) once the relay propagates the event, and handle payment requests via NIP-47.
 
-### 4.3. Chat Integration (NIP-04/NIP-29)
+### 4.3. Chat Integration (NIP-04/NIP-29) and Payments
 
 *   **Encryption:** All private chat events (Kind 4) must use the standard NIP-04 encryption. Since the encryption/decryption is based on the shared private key, and the private key is managed by the NIP-46 remote signer, both the Web and Android clients will be able to seamlessly encrypt and decrypt messages.
 *   **Group Chat:** NIP-29 events must be consistently implemented on both platforms to ensure group membership and message history are synchronized.
+*   **Payments in Chat:** Implement NIP-57 (Zaps) and NIP-47 for sending/receiving SATS directly within the chat interface.
 
-## 5. Conclusion
+## 5. Lightning Wallet Integration (NIP-47 / LNURL)
+
+To enable the "chat, shop, and manage funds" vision, **Nostr Wallet Connect (NIP-47)** is the critical integration point.
+
+### 5.1. NIP-47 (Nostr Wallet Connect)
+
+NIP-47 allows the client to securely request payments from a user's remote Lightning wallet without ever holding the user's funds or keys.
+
+| Feature | NIP-47 Implementation |
+| :--- | :--- |
+| **Sending Payments** | Client sends a `pay_invoice` request to the user's NWC URI. |
+| **Receiving Payments** | Client generates a Lightning Invoice and sends a `get_invoice` request to the NWC URI (if the wallet supports this). More commonly, the client uses a Lightning Address (LNURL-pay) associated with the user's wallet. |
+| **Non-Custodial** | The user's wallet remains separate and secure, connected only via the NWC string. |
+
+### 5.2. LNURL Integration
+
+LNURL (Lightning URL) simplifies payment requests and withdrawals.
+
+*   **LNURL-pay:** Used for generating Lightning Invoices for marketplace purchases and for receiving Zaps (NIP-57).
+*   **LNURL-withdraw:** Used for users to withdraw funds from any custodial balance (if the client ever implements one, though non-custodial is preferred) or for automated payouts.
+
+## 6. Conclusion
 
 By strictly adhering to the Nostr protocol and prioritizing NIP-46 for key management, the Web Application will be built with a **decentralized, mobile-ready foundation**. The data synchronization challenge is effectively outsourced to the robust, event-based nature of the Nostr relays, ensuring a consistent user experience across the Web and future Android applications.
 

@@ -17,7 +17,7 @@ The goal of this project is to develop a **Nostr-based web client** that seamles
 | **Chat - Group** | Encrypted group chat functionality. | **NIP-24/NIP-29:** For group chat management and communication. The client should support creating and joining private, closed groups. |
 | **Marketplace - Listings** | Users must be able to create, view, and manage product listings (stalls and products). | **NIP-15:** Nostr Marketplace. Events must be Kind 30017 (Stall) and Kind 30018 (Product). |
 | **Marketplace - Search/Filter** | Robust search by title, description, and filtering by category and location. | Client-side indexing and filtering of NIP-15 events. |
-| **Marketplace - Payments** | Integration for Lightning Network payments (SATS). | **NIP-57:** Zap (Lightning Tips) for non-product payments. For product payments, the client should support generating Lightning Invoices (LND/LNBits integration). |
+| **Marketplace - Payments** | Integration for Lightning Network payments (SATS). | **NIP-47 (Nostr Wallet Connect):** Primary method for secure, non-custodial wallet access. **NIP-57:** Zap (Lightning Tips) for non-product payments. **LNURL:** For easy payment requests and withdrawals. |
 | **User Interface** | Modern, responsive web design (dark mode preferred, similar to 0xchat). Clear separation between Chat and Marketplace sections. | Use a modern web framework (e.g., React, Vue, Svelte) and a component library (e.g., Tailwind CSS, Material UI). |
 
 ## 3. Technical Specifications
@@ -36,6 +36,7 @@ The client must implement the following NIPs:
 | **NIP-46** | Nostr Connect (Remote Signer) | **Highly Recommended Login Method.** Enables secure remote signing via a separate key management app (e.g., Alby Mobile, Nostrum). The client initiates a connection using a `nostrconnect://` URI. |
 | **NIP-15** | Nostr Marketplace | Events Kind 30017 (Stall) and Kind 30018 (Product) for marketplace listings. |
 | **NIP-29** | Group Chat | Events Kind 42 (Group Chat Message) and related kinds for group creation/management. |
+| **NIP-47** | Nostr Wallet Connect (NWC) | Standardized protocol for clients to access a remote Lightning wallet for sending and receiving payments. |
 | **NIP-57** | Zaps (Lightning Tips) | Events Kind 9735. Used for tipping users and potentially for small-value marketplace transactions. |
 
 ### 3.2. Authentication Flow
@@ -104,7 +105,7 @@ The UI should be a single-page application (SPA) with a clear, persistent naviga
 | **Nostr Library** | `nostr-tools` (JS) or similar | For event creation, signing, and relay communication. |
 | **Relay Connection** | WebSocket implementation | Must handle multiple concurrent relay connections and manage subscriptions efficiently. |
 | **Key Management** | NIP-07 (Browser Extension) / NIP-46 (Nostr Connect) | Primary methods for secure, non-custodial signing of events. |
-| **Payment** | Lightning Invoice Generation | Requires integration with a Lightning service (e.g., LNBits, LNURL-pay). |
+| **Payment** | Lightning Wallet Integration | Requires NIP-47 (NWC) and LNURL support for secure, non-custodial payment handling. |
 
 ## 5. Next Steps for AI Coding Agent
 
@@ -113,7 +114,7 @@ The UI should be a single-page application (SPA) with a clear, persistent naviga
 3.  **Authentication:** Implement NIP-07 and NIP-05 login flows.
 4.  **Chat Module:** Develop the UI and logic for NIP-04 (private chat) and NIP-29 (group chat).
 5.  **Marketplace Module:** Develop the UI and logic for NIP-15 (Stall and Product events), including search and filtering.
-6.  **Payment Integration:** Implement NIP-57 (Zaps) and a mechanism for generating Lightning invoices for product purchases.
+6.  **Payment Integration:** Implement **NIP-47 (NWC)** for secure wallet connection, **NIP-57 (Zaps)**, and **LNURL** support for all payment and marketplace transactions.
 
 ---
 *End of Documentation*
