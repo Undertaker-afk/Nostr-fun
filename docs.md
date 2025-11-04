@@ -33,22 +33,27 @@ The client must implement the following NIPs:
 | **NIP-04** | Encrypted Direct Messages | Events must be Kind 4. Used for all private 1:1 chat. |
 | **NIP-05** | Nostr Address Verification | Used for resolving `username@domain` to a public key for login and profile display. |
 | **NIP-07** | Browser Extension Signer | **Recommended Login Method.** Use a browser extension (e.g., Alby) for key management and signing events without exposing the private key. |
+| **NIP-46** | Nostr Connect (Remote Signer) | **Highly Recommended Login Method.** Enables secure remote signing via a separate key management app (e.g., Alby Mobile, Nostrum). The client initiates a connection using a `nostrconnect://` URI. |
 | **NIP-15** | Nostr Marketplace | Events Kind 30017 (Stall) and Kind 30018 (Product) for marketplace listings. |
 | **NIP-29** | Group Chat | Events Kind 42 (Group Chat Message) and related kinds for group creation/management. |
 | **NIP-57** | Zaps (Lightning Tips) | Events Kind 9735. Used for tipping users and potentially for small-value marketplace transactions. |
 
 ### 3.2. Authentication Flow
 
-The client must present a clear login screen with three options:
+The client must present a clear login screen with four options:
 
-1.  **NIP-05 Login (Recommended):**
+1.  **Nostr Connect (NIP-46) / QR Code Login (Highly Recommended):**
+    *   Client displays a `nostrconnect://` URI as a QR code.
+    *   User scans the QR code with their key management app (remote signer).
+    *   The remote signer handles all event signing requests securely.
+2.  **NIP-05 Login (Recommended):**
     *   User enters `username@domain`.
     *   Client resolves the NIP-05 identifier to a public key (npub).
-    *   Client prompts the user to sign a dummy event or uses NIP-07 for authentication.
-2.  **Public Key (npub) Login:**
+    *   Client prompts the user to sign a dummy event or uses NIP-07/NIP-46 for authentication.
+3.  **Public Key (npub) Login:**
     *   User enters their public key.
-    *   Client prompts the user to sign a dummy event or uses NIP-07 for authentication.
-3.  **Private Key (nsec) Login (Discouraged):**
+    *   Client prompts the user to sign a dummy event or uses NIP-07/NIP-46 for authentication.
+4.  **Private Key (nsec) Login (Discouraged):**
     *   User enters their private key.
     *   **CRITICAL SECURITY NOTE:** The client must immediately warn the user about the security risks. The private key should be stored in an encrypted, temporary session variable and never persisted.
 
@@ -98,7 +103,7 @@ The UI should be a single-page application (SPA) with a clear, persistent naviga
 | **Styling** | Tailwind CSS / Styled Components | For rapid, utility-first styling. |
 | **Nostr Library** | `nostr-tools` (JS) or similar | For event creation, signing, and relay communication. |
 | **Relay Connection** | WebSocket implementation | Must handle multiple concurrent relay connections and manage subscriptions efficiently. |
-| **Key Management** | NIP-07 (Browser Extension) | Primary method for signing events. |
+| **Key Management** | NIP-07 (Browser Extension) / NIP-46 (Nostr Connect) | Primary methods for secure, non-custodial signing of events. |
 | **Payment** | Lightning Invoice Generation | Requires integration with a Lightning service (e.g., LNBits, LNURL-pay). |
 
 ## 5. Next Steps for AI Coding Agent
